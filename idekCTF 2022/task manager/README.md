@@ -76,7 +76,8 @@ To see how this code is generated, we'll have to look into `compiler.py` in the 
 
         self.writeline("from jinja2.runtime import " + ", ".join(exported_names))
 ```
-It takes a list of strings from `jinja2.runtime` and places it directly into the source code! This should actually be quite simple to exploit. We'll just have to watch out for the fact that the list for some reason is being sorted, and we have to create a payload within 50 chars.
+It takes a list of strings from `jinja2.runtime` and places it directly into the source code! Now we just need a way to get to the `jinja2` module, since it's of course not in the dependencies of `pydash`.  
+This turned out to actually be rather easy, because `sys.modules` contains a dictionary of all loaded modules. We _could_ have used this to get access to the context of `app.py` by reading `sys.modules.__main__` and set `app.env` to `cool`, but turns out this was not necessary after all.
 
 My final payload:
 ```py
